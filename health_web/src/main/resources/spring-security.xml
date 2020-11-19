@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                  http://www.springframework.org/schema/beans/spring-beans.xsd
+                  http://www.springframework.org/schema/mvc
+                  http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                  http://code.alibabatech.com/schema/dubbo
+                  http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+                  http://www.springframework.org/schema/context
+                  http://www.springframework.org/schema/context/spring-context.xsd
+                          http://www.springframework.org/schema/security
+                          http://www.springframework.org/schema/security/spring-security.xsd">
+    <!--
+        由于拦截规则只配置了pages目录，所以其它资源则不需要匿名访问了
+    -->
+    <!--认证
+    auto-config：true 自动配置（自动生成登录页面等）
+    use-expressions：true 使用表达式  access="hasRole('ROLE_ADMIN')"  or access="hasRole('ADMIN')"   false:access="ROLE_ADMIN"
+    -->
+    <security:http auto-config="true" use-expressions="true">
+        <security:headers>
+            <!--设置在页面可以通过iframe访问受保护的页面，默认为不允许访问-->
+            <security:frame-options policy="SAMEORIGIN"></security:frame-options>
+        </security:headers>
+        <!--拦截规则只配置拦截需要登录的页面-->
+        <security:intercept-url pattern="/pages/**" access="isAuthenticated()"/>
+
+        <!--登录配置
+        login-processing-url="/login.do" 登录请求 跟页面保持一致
+        username-parameter="username"  账号名称 页面 表单中name保持一致 如果使用是默认值可以省略
+        login-page="/login.html" 默认登录页面
+        default-target-url="/index.html"  默认往此页面跳转 （无论成功失败）
+        authentication-failure-url="/login.html"   认证失败后 跳转登录页面
+        always-use-default-target="true" ：总是往default-target-url="/index.html"  页面跳转
+        -->
+        <security:form-login login-processing-url="/login.do"
+                             login-page="/login.html"
+                             default-target-url="/pages/main.html"
+                             always-use-default-target="true"
+                             authentication-failure-url="/login.html"/>
+
+
+        <!--禁用csrf-->
+        <security:csrf disabled="true"/>
+
+
+        <!--登出
+        logout-url="/logout.do"：登出请求
+        invalidate-session="true":session失效
+        logout-success-url="/login.html":登出成功页面
+        -->
+        <security:logout logout-url="/logout.do" invalidate-session="true" logout-success-url="/login.html"/>
+
+    </security:http>
+
+    <!--配置认证管理器 : 验证账号 密码-->
+    <security:authentication-manager>
+        <!--写死账号密码测试-->
+        <security:authentication-provider user-service-ref="userServiceSecurity">
+            <!--配置密码加密方式-->
+            <security:password-encoder ref="bCryptPasswordEncoder"></security:password-encoder>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <!--开启注解方式权限控制-->
+    <security:global-method-security pre-post-annotations="enabled" />
+
+    <!--注册密码加密对象-->
+    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+</beans>

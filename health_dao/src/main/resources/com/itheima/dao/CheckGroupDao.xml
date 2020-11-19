@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.dao.CheckGroupDao">
+    <!--新增检查项-->
+    <insert id="add" parameterType="com.itheima.pojo.CheckGroup">
+        /*获取检查组id*/
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_checkgroup(code,name,helpCode,sex,remark,attention)
+          values(#{code},#{name},#{helpCode},#{sex},#{remark},#{attention})
+    </insert>
+
+    <!--设置检查组和检查项中间表-->
+    <insert id="setCheckGroupAndCheckItem" parameterType="map">
+        insert into t_checkgroup_checkitem(checkgroup_id,checkitem_id)
+        values(#{groupId},#{checkItemId})
+    </insert>
+
+    <!--检查项分页查询-->
+    <select id="selectByCondition" parameterType="string" resultType="com.itheima.pojo.CheckGroup">
+        select * from t_checkgroup
+        <if test="value != null and value.length > 0">
+            where code = #{value} or name = #{value} or helpCode = #{value}
+        </if>
+    </select>
+    <!-- 根据检查组id查询检查组 -->
+    <select id="findById" parameterType="int" resultType="com.itheima.pojo.CheckGroup">
+        select * from t_checkgroup where id = #{id}
+    </select>
+    <!--根据检查组id 查询检查项ids-->
+    <select id="findCheckItemIdsByGroupId" parameterType="int" resultType="int">
+        select checkitem_id from t_checkgroup_checkitem where checkgroup_id = #{id}
+    </select>
+
+    <!--先根据检查组id从检查组检查项中间表-->
+    <delete id="deleteRelByGroupById" parameterType="int">
+        delete from t_checkgroup_checkitem where checkgroup_id = #{id}
+    </delete>
+
+    <!--根据检查组id 更新检查组数据-->
+    <update id="edit" parameterType="com.itheima.pojo.CheckGroup">
+            update t_checkgroup
+            <set>
+                <if test="code!=null and code.length>0">
+                    code=#{code},
+                </if>
+                <if test="name!=null and name.length>0">
+                    name=#{name},
+                </if>
+                <if test="helpCode!=null and helpCode.length>0">
+                    helpCode=#{helpCode},
+                </if>
+                <if test="sex!=null and sex.length>0">
+                    sex=#{sex},
+                </if>
+
+                <if test="remark!=null and remark.length>0">
+                    remark=#{remark},
+                </if>
+                <if test="attention!=null and attention.length>0">
+                    attention=#{attention},
+                </if>
+            </set>
+            where id = #{id}
+    </update>
+
+    <!--根据检查组id查询检查组检查项中间表-->
+    <select id="findCountCheckItemByGroupId" parameterType="int" resultType="int">
+        select count(*) from t_checkgroup_checkitem where checkgroup_id =#{id}
+    </select>
+
+    <!--如果第三步关系不存在，根据检查组id查询检查组套餐数据-->
+    <select id="findCountSetmealByGroupId" parameterType="int" resultType="int">
+        select count(*) from t_setmeal_checkgroup where checkgroup_id = #{id}
+    </select>
+    <!--根据检查组id删除检查组记录-->
+    <delete id="deleteById" parameterType="int">
+        delete from t_checkgroup where id =#{id}
+    </delete>
+
+    <!-- 查询所有检查组 -->
+    <select id="findAll" resultType="com.itheima.pojo.CheckGroup">
+        select * from t_checkgroup
+    </select>
+
+    <!--关联查询检查项-->
+    <resultMap id="findByIdResultMap" type="com.itheima.pojo.CheckGroup">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+        <!-- 根据检查组id 查询检查项列表
+        -->
+        <collection property="checkItems" column="id" select="com.itheima.dao.CheckItemDao.findCheckItemListById"/>
+
+    </resultMap>
+
+    <!--根据套餐id查询检查组list-->
+    <select id="findCheckGroupListById" parameterType="int" resultMap="findByIdResultMap">
+      select * from t_checkgroup where id in(select checkgroup_id from t_setmeal_checkgroup where setmeal_id = #{id})
+    </select>
+</mapper>

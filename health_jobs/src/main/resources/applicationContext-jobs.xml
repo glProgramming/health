@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                  http://www.springframework.org/schema/beans/spring-beans.xsd
+                  http://www.springframework.org/schema/context
+                  http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--配置 -->
+    <!--方式一：-->
+    <!--<context:annotation-config></context:annotation-config>-->
+
+    <!--方式二：-->
+    <!--@Component @Service 等 component-scan = annotation-config + bean注册 -->
+    <context:component-scan base-package="com.itheima"></context:component-scan>
+
+    <!--自定义job-->
+   <!-- <bean id="clearImgJob" class="com.itheima.jobs.ClearImgJob"/>
+-->
+    <!--配置任务描述 调度程序调用自定义任务类(java反射)-->
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!--配置类-->
+        <property name="targetObject" ref="clearImgJob"/>
+        <!--配置方法-->
+        <property name="targetMethod" value="clearImg"/>
+    </bean>
+
+    <!--触发器 配置任务什么时间执行-->
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <!--注入jobDetail-->
+        <property name="jobDetail" ref="jobDetail"/>
+        <!--配置触发时间-->
+        <property name="cronExpression">
+            <!--单独说 每隔5秒钟执行一次任务-->
+            <value>0/10 * * * * ?</value>
+        </property>
+    </bean>
+
+    <!--配置调度工厂-->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="cronTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+
+</beans>

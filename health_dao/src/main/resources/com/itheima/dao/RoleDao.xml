@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.dao.RoleDao">
+    <!--定义userMap-->
+    <resultMap id="roleMap" type="com.itheima.pojo.Role">
+        <id column="id" property="id"></id>
+        <!--根据角色id关联查询权限集合-->
+        <collection property="permissions" column="id" select="com.itheima.dao.PermissionDao.findPermissionsByRoleId"/>
+    </resultMap>
+
+    <!--根据用户id关联查询角色集合-->
+    <select id="findRolesByUserId" parameterType="int" resultMap="roleMap">
+        select tr.* from t_role tr,t_user_role tur where tr.id = tur.role_id and tur.user_id = #{userId}
+    </select>
+</mapper>

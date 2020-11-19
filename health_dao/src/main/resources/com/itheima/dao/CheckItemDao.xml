@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.dao.CheckItemDao">
+    <!--查询所有-->
+    <select id="findAll" resultType="com.itheima.pojo.CheckItem">
+        select * from t_checkitem
+    </select>
+
+    <!--新增检查项-->
+    <insert id="add" parameterType="com.itheima.pojo.CheckItem">
+        insert into t_checkitem(code,name,sex,age,price,type,remark,attention)
+          values(#{code},#{name},#{sex},#{age},#{price},#{type},#{remark},#{attention})
+    </insert>
+
+    <!--检查项分页查询-->
+    <select id="selectByCondition" parameterType="string" resultType="com.itheima.pojo.CheckItem">
+        select * from t_checkitem
+        <if test="value != null and value.length > 0">
+            where code = #{value} or name = #{value}
+        </if>
+    </select>
+
+    <!--根据检查项id查询  检查项检查组中间表-->
+    <select id="findCountByCheckItemId" parameterType="int" resultType="int">
+        select count(*) from t_checkgroup_checkitem where checkitem_id = #{id}
+    </select>
+    <!--如果中间表没有记录  根据检查项id删除检查项记录-->
+    <delete id="deleteById" parameterType="int">
+        delete from t_checkitem where id = #{id}
+    </delete>
+
+
+    <!--根据检查项id查询检查项对象-->
+    <select id="findById" parameterType="int" resultType="com.itheima.pojo.CheckItem">
+        select * from t_checkitem where id = #{id}
+    </select>
+
+    <!-- 根据id更新检查项数据 -->
+    <update id="edit" parameterType="com.itheima.pojo.CheckItem">
+        update t_checkitem
+        <set>
+            <if test="code!=null and code.length>0">
+                code=#{code},
+            </if>
+            <if test="name!=null and name.length>0">
+                name=#{name},
+            </if>
+            <if test="sex!=null and sex.length>0">
+                sex=#{sex},
+            </if>
+            <if test="age!=null and age.length>0">
+                age=#{age},
+            </if>
+            <if test="price!=null ">
+                price=#{price},
+            </if>
+            <if test="type!=null and type.length>0">
+               type=#{type},
+            </if>
+            <if test="remark!=null and remark.length>0">
+                remark=#{remark},
+            </if>
+            <if test="attention!=null and attention.length>0">
+                attention=#{attention},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据检查组id查询检查项list-->
+    <select id="findCheckItemListById" parameterType="int" resultType="com.itheima.pojo.CheckItem">
+         select * from t_checkitem where id in(select checkitem_id from t_checkgroup_checkitem where checkgroup_id = #{id})
+    </select>
+</mapper>
