@@ -1,12 +1,15 @@
 package com.itheima.pojo;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 菜单
  */
-public class Menu implements Serializable{
+public class Menu implements Serializable {
     private Integer id;
     private String name; // 菜单名称
     private String linkUrl; // 访问路径
@@ -17,6 +20,8 @@ public class Menu implements Serializable{
     private Set<Role> roles = new HashSet<Role>(0);//角色集合
     private List<Menu> children = new ArrayList<>();//子菜单集合
     private Integer parentMenuId;//父菜单id
+
+    private String title;// 菜单列表项名称
 
     public Integer getId() {
         return id;
@@ -96,5 +101,13 @@ public class Menu implements Serializable{
 
     public void setParentMenuId(Integer parentMenuId) {
         this.parentMenuId = parentMenuId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

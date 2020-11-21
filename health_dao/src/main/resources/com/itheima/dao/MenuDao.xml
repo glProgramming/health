@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.dao.MenuDao">
+<!--查询所有菜单项数据-->
+<select id="findAll" resultType="com.itheima.pojo.Menu">
+    select * from t_menu;
+</select>
+<!--查询对应级别菜单项-->
+<select id="findMenuByLevel1" resultType="com.itheima.pojo.Menu">
+    select * from t_menu
+    where level = 1;
+</select>
+<!--查询一级菜单对应二级菜单项-->
+<select id="findMenuByLevel2AndParentId" resultType="com.itheima.pojo.Menu">
+    select * from t_menu
+    where level = 2
+    and parentMenuId = #{parentId};
+</select>
+
+<!--新增菜单项数据-->
+<insert id="add">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+        SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_menu
+    (name, linkUrl, path, priority, icon, description, parentMenuId, level)
+    values
+    <if test="parentMenuId != null">
+        (#{name}, #{linkUrl}, CONCAT('/',#{path},'-',#{priority}), #{priority}, #{icon}, #{description}, #{parentMenuId}, 2)
+    </if>
+    <if test="parentMenuId == null">
+        (#{name}, #{linkUrl}, #{priority}+1, #{priority}, #{icon}, #{description}, #{parentMenuId}, 1)
+    </if>
+</insert>
+<!--查询二级菜单所属菜单路径-->
+<select id="findParentPathByParentMenuId" resultType="java.lang.String">
+    select path from t_menu where id = #{parentMenuId}
+</select>
+<!--查询新增菜单上级菜单列表-->
+<select id="parentMenus" resultType="com.itheima.pojo.Menu">
+    select id,name from t_menu where level = 1
+</select>
+
+
+<!--根据id查询菜单项数据-->
+<select id="findById" resultType="com.itheima.pojo.Menu">
+    select * from t_menu where id = #{id};
+</select>
+<!--根据id更新菜单项数据-->
+<update id="edit">
+    update t_menu
+    set
+        name = #{name},
+        linkUrl = #{linkUrl},
+        <if test="parentMenuId != null">
+            path = CONCAT('/',#{path},'-',#{priority}),
+            level = 2,
+        </if>
+        <if test="parentMenuId == null">
+            path = #{priority}+1,
+            level = 1,
+        </if>
+        priority = #{priority},
+        icon = #{icon},
+        description = #{description},
+        parentMenuId = #{parentMenuId}
+    where id = #{id};
+</update>
+
+
+<!--根据id删除菜单项-->
+<delete id="deleteById">
+    delete from t_menu where id = #{id}
+</delete>
+
+
+<!--获取当前登录用户菜单列表-->
+<!--<select id="getMenuList" resultType="com.itheima.pojo.Menu">
+    select path,name,icon from t_menu;
+</select>-->
+
+</mapper>
