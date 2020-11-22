@@ -3,14 +3,15 @@ package com.itheima.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.itheima.dao.MemberDao;
 import com.itheima.dao.OrderDao;
+import com.itheima.dao.SetmealDao;
 import com.itheima.service.ReportService;
 import com.itheima.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 运营数据统计报表
@@ -100,5 +101,69 @@ public class ReportServiceImpl implements ReportService {
         rsMap.put("thisMonthVisitsNumber",thisMonthVisitsNumber);
         rsMap.put("hotSetmeal",hotSetmeal);
         return rsMap;
+    }
+
+    @Override
+    public List<Map<String, Object>> reportAgeAndSex() {
+        List<Map<String, Object>> objects = new ArrayList<>();
+
+        Map<String, Object> stringMan = new HashMap<>();
+        Integer max = memberDao.reportAgeAndSexman();
+        stringMan.put("value",max);
+        stringMan.put("name","男");
+        objects.add(stringMan);
+
+        Map<String, Object> stringWoman = new HashMap<>();
+        Integer woman = memberDao.reportAgeAndSexwoman();
+        stringWoman.put("value",woman);
+        stringWoman.put("name","女");
+        objects.add(stringWoman);
+
+        return objects;
+    }
+
+    @Override
+    public List<Map<String, Object>> AgeBand() throws Exception {
+        List<Map<String, Object>> objects = new ArrayList<>();
+
+        Map<String, Object> one = new HashMap<>();
+        one.put("value",AgeBandFunction(0,18));
+        one.put("name","0-18");
+        objects.add(one);
+
+        Map<String, Object> tow = new HashMap<>();
+        tow.put("value",AgeBandFunction(18,30));
+        tow.put("name","18-30");
+        objects.add(tow);
+
+        Map<String, Object> three = new HashMap<>();
+        three.put("value",AgeBandFunction(30,45));
+        three.put("name","30-45");
+        objects.add(three);
+
+        Map<String, Object> may = new HashMap<>();
+        may.put("value",AgeBandFunction(45,200));
+        may.put("name","45以上");
+        objects.add(may);
+
+        return objects;
+    }
+    public Integer AgeBandFunction(Integer Intstart,Integer Intstop) throws Exception{
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String format = simpleDateFormat.format(new Date());
+        String substring = format.substring(4);//-02-21
+        String newYear = format.substring(0,4);//2020
+        Integer count =0;
+        Date start = null;
+        Date stop = null;
+
+        start = simpleDateFormat.parse(Integer.toString(Integer.parseInt(newYear)-Intstart)+substring);
+        if (Intstop != null){
+            stop = simpleDateFormat.parse(Integer.toString(Integer.parseInt(newYear)-Intstop)+substring);
+            count = memberDao.AgeBandFunction(start,stop);
+        }else {
+            count = memberDao.AgeBandFunctionNull(start);
+        }
+        return count;
     }
 }
