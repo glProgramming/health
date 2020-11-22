@@ -62,8 +62,16 @@ public class MessageConstant {
     public static final String ORDER_FAIL = "预约失败";
     public static final String GET_USERNAME_SUCCESS = "获取当前登录用户名称成功";
     public static final String GET_USERNAME_FAIL = "获取当前登录用户名称失败";
+    public static final String GET_MENULIST_SUCCESS = "获取当前登录用户菜单列表成功";
+    public static final String GET_MENULIST_FAIL = "获取当前登录用户菜单列表失败";
     public static final String GET_MENU_SUCCESS = "获取当前登录用户菜单成功";
     public static final String GET_MENU_FAIL = "获取当前登录用户菜单失败";
+    public static final String ADD_MENU_SUCCESS = "新增当前登录用户菜单项成功";
+    public static final String ADD_MENU_FAIL = "新增当前登录用户菜单项失败";
+    public static final String EDIT_MENU_SUCCESS = "编辑当前登录用户菜单项成功";
+    public static final String EDIT_MENU_FAIL = "编辑当前登录用户菜单项失败";
+    public static final String DELETE_MENU_SUCCESS = "删除当前登录用户菜单项成功";
+    public static final String DELETE_MENU_FAIL = "删除当前登录用户菜单项失败";
     public static final String GET_MEMBER_NUMBER_REPORT_SUCCESS = "获取会员统计数据成功";
     public static final String GET_MEMBER_NUMBER_REPORT_FAIL = "获取会员统计数据失败";
     public static final String GET_SETMEAL_COUNT_REPORT_SUCCESS = "获取套餐统计数据成功";

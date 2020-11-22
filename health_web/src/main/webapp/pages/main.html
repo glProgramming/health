@@ -56,6 +56,17 @@
             <el-container>
                 <el-aside width="200px">
                     <el-menu>
+                        <el-submenu v-for="work in workStation" :index="work.path">
+                            <template slot="title">
+                                <i class="fa" :class="work.icon"></i>
+                                {{work.title}}
+                            </template>
+                            <template v-for="child in work.children">
+                                <el-menu-item :index="child.path">
+                                    <a :href="child.linkUrl" target="right">{{child.name}}</a>
+                                </el-menu-item>
+                            </template>
+                        </el-submenu>
                         <el-submenu v-for="menu in menuList" :index="menu.path">
                             <template slot="title">
                                 <i class="fa" :class="menu.icon"></i>
@@ -63,7 +74,7 @@
                             </template>
                             <template v-for="child in menu.children">
                                 <el-menu-item :index="child.path">
-                                    <a :href="child.linkUrl" target="right">{{child.title}}</a>
+                                    <a :href="child.linkUrl" target="right">{{child.name}}</a>
                                 </el-menu-item>
                             </template>
                         </el-submenu>
@@ -87,13 +98,15 @@
         el: '#app',
         data:{
             username:null,
-            menuList:[
+            workStation:[
                 {
-                    "path": "1",
-                    "title": "工作台",
-                    "icon":"fa-dashboard",
-                    "children": []
-                },
+                "path": "1",
+                "title": "工作台",
+                "icon":"fa-dashboard",
+                "children": []
+            }],
+            menuList:[]
+            /*menuList:[
                 {
                     "path": "2",
                     "title": "会员管理",
@@ -196,12 +209,26 @@
                             "children":[]
                         },
                     ]
+                },
+                {
+                    "path": "6",     //菜单项所对应的路由路径
+                    "title": "系统设置",     //菜单项名称
+                    "icon":"fa-users",
+                    "children":[//是否有子菜单，若没有，则为[]
+                        {
+                            "path": "/6-1",
+                            "title": "菜单管理",
+                            "linkUrl":"menu.html",
+                            "children":[]
+                        }
+                    ]
                 }
-            ]
+            ]*/
         },
         created() {
             //查询所有检查项列表
             this.getUserName();
+            this.getMenuList();
         },
         methods: {
             //获取用户名
@@ -210,6 +237,11 @@
                     //res.data == result
                     //res.data.data == username
                     this.username = res.data.data;
+                })
+            },
+            getMenuList(){
+                axios.get("/menu/getMenuList.do").then(res=>{
+                    this.menuList = res.data.data;
                 })
             }
         },
