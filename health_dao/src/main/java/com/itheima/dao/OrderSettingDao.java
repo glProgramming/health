@@ -47,4 +47,13 @@ public interface OrderSettingDao {
      * @param orderSetting
      */
     void editReservationsByOrderDate(OrderSetting orderSetting);
+
+
+    //保存历史事件
+    void backup(String date);
+
+    //清理历史数据
+    void clear(String date);
+
+
 }

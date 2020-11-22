@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.itheima.dao.OrderSettingDao">
 
-  <!-- 根据可预约日期 查询记录是否存在 -->
+    <!-- 根据可预约日期 查询记录是否存在 -->
     <select id="findCountByOrderDate" parameterType="date" resultType="int">
         select count(*) from t_ordersetting where orderDate = #{orderDate}
     </select>
@@ -25,6 +25,7 @@
         values(#{orderDate},#{number},#{reservations})
     </insert>
 
+
     <!--根据年月查询t_ordersetting表-->
     <select id="getOrderSettingByYearMonth" parameterType="map" resultType="com.itheima.pojo.OrderSetting">
         select * from t_ordersetting where orderDate between #{startDate} and #{endDate}
@@ -34,6 +35,8 @@
     <select id="findByOrderDate" parameterType="date" resultType="com.itheima.pojo.OrderSetting">
         select * from t_ordersetting where orderDate = #{orderDateNew}
     </select>
+
+
 
     <!--根据预约日期修改已经预约人数-->
     <update id="editReservationsByOrderDate" parameterType="com.itheima.pojo.OrderSetting">
@@ -45,4 +48,21 @@
         </set>
         where orderDate = #{orderDate}
     </update>
+
+
+    <insert id="backup" parameterType="string">
+        INSERT INTO `t_ordersetting2`
+                (SELECT  * FROM `t_ordersetting` WHERE orderDate &lt; #{date})
+    </insert>
+
+
+    <!--清理历史数据-->
+    <delete id="clear" parameterType="string">
+        delete from t_ordersetting where orderDate &lt; #{date}
+    </delete>
+
+
+
+
+
 </mapper>
