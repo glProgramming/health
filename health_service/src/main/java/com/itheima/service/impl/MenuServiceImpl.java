@@ -232,18 +232,6 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<Menu> findPage(String queryString,String username) {
-        /*List<Menu> parentList = menuDao.findMenuByLevel1AndCondition(queryString);
-        //遍历parentList
-        if (parentList.size()>0) {
-            for (Menu parent : parentList) {
-                //List<Menu> childrenList = menuDao.findMenuByLevel2AndParentIdAndCondition(parent.getId(),queryString);
-                List<Menu> childrenList = menuDao.findMenuByLevel2AndParentId(parent.getId());
-                parent.setChildren(childrenList);
-            }
-        }else {
-            parentList = menuDao.findMenuByLevel2AndCondition(queryString);
-        }
-        return parentList;*/
         //获取菜单id集合
         List<Integer> menuIdList = getMenuIdList(username);
         //获取一级菜单集合
@@ -273,7 +261,9 @@ public class MenuServiceImpl implements MenuService {
         }else {
             for (Integer menuId : menuIdList) {
                 Menu level2Menu = menuDao.findMenuByLevel2AndCondition(queryString,menuId);
-                parentList.add(level2Menu);
+                if (level2Menu != null) {
+                    parentList.add(level2Menu);
+                }
             }
         }
         return parentList;

@@ -16,9 +16,10 @@
 <body class="hold-transition">
 <div id="app">
     <div class="content-header">
-        <h1>菜单管理<!--<small>检查项管理</small>--></h1>
+        <h1>系统设置<small>菜单管理</small></h1>
         <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>系统设置</el-breadcrumb-item>
             <el-breadcrumb-item>菜单管理</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
@@ -26,68 +27,9 @@
         <div class="box">
             <div class="filter-container">
                 <el-input placeholder="菜单ID/菜单名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
-                <el-button @click="findPage()" class="dalfBut">查询</el-button>
-                <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
+                <el-button @click="findPage()" class="dalfBut" icon="el-icon-search">查询</el-button>
+                <el-button type="primary" class="butT" @click="handleCreate()" icon="el-icon-plus">新建</el-button>
             </div>
-            <!--<el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
-                <el-table-column type="index" align="center" label="序号"></el-table-column>
-                <el-table-column prop="code" label="项目编码" align="center"></el-table-column>
-                <el-table-column prop="name" label="项目名称" align="center"></el-table-column>
-                <el-table-column label="适用性别" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.sex == '0' ? '不限' : scope.row.sex == '1' ? '男' : '女'}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="age" label="适用年龄" align="center"></el-table-column>
-                <el-table-column prop="remark" label="项目说明" align="center"></el-table-column>
-                <el-table-column label="操作" align="center">
-                    <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>-->
-            <!--<el-table
-                    :data="tableData"
-                    style="width: 100%;margin-bottom: 20px;"
-                    row-key="id"
-                    default-expand-all
-                    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">-->
-            <!--elementui 原始表格-->
-            <!--<div>
-            <el-table
-                    stripe
-                    highlight-current-row
-                    :data="tableData"
-                    style="width: 100%;margin-bottom: 20px;"
-                    row-key="id"
-                    lazy
-                    :load="load"
-                    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-                <el-table-column
-                        prop="date"
-                        label="日期"
-                        sortable
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="name"
-                        label="姓名"
-                        sortable
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="linkUrl"
-                        label="地址">
-                </el-table-column>
-                <el-table-column label="操作" align="center">
-                    <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            </div>-->
             <div>
                 <!--<el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>-->
                 <!--菜单列表-->
@@ -103,13 +45,33 @@
                     <el-table-column
                             prop="id"
                             label="菜单ID"
-                            align="center"
-                            sortable>
+                            sortable
+                            width="90">
                     </el-table-column>
                     <el-table-column
                             prop="name"
                             label="菜单名称"
                             align="center">
+                        <!--<template v-for="child in menu.children">
+                            <el-menu-item :index="child.path">
+                                <a :href="child.linkUrl" target="right">{{child.name}}</a>
+                            </el-menu-item>
+                        </template>-->
+                        <template slot-scope="scope">
+                            <el-popover trigger="hover" placement="top">
+                                <p>名称: {{ scope.row.name }}</p>
+                                <p>下级菜单:</p>
+                                <template v-for="child in scope.row.children">
+                                    <el-item :index="child.path">
+                                        <p style="text-align: center">{{child.name}}</p>
+                                    </el-item>
+                                </template>
+                                <!--<p>住址: {{ scope.row.children.name }}</p>-->
+                                <div slot="reference" class="name-wrapper">
+                                    <el-tag size="medium">{{ scope.row.name }}</el-tag>
+                                </div>
+                            </el-popover>
+                        </template>
                     </el-table-column>
                     <el-table-column
                             prop="linkUrl"
@@ -134,34 +96,20 @@
                         <template slot-scope="scope">
                             <i class="fa" :class="scope.row.icon"></i>
                         </template>
-                        <!--<i :class="icon"></i>-->
                     </el-table-column>
                     <el-table-column
                             prop="description"
                             label="说明"
                             align="center">
                     </el-table-column>
-                    <el-table-column label="操作" align="center">
+                    <el-table-column label="操作" align="center" width="200">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-                            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)" icon="el-icon-edit">编辑</el-button>
+                            <el-button size="mini" type="danger" @click="handleDelete(scope.row)" icon="el-icon-delete">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
-            <!--分页组件-->
-            <!--<div class="pagination-container">
-                <el-pagination
-                        class="pagiantion"
-                        @current-change="handleCurrentChange"
-                        :current-page="pagination.currentPage"
-                        :page-size="pagination.pageSize"
-                        layout="total, prev, pager, next, jumper"
-                        :total="pagination.total">
-                </el-pagination>
-            </div>-->
-
-
             <!-- 新增标签弹层 -->
             <div class="add-form">
                 <el-dialog title="新增菜单项" :visible.sync="dialogFormVisible">

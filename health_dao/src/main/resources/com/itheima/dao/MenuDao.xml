@@ -107,7 +107,7 @@
     where level = 1
     and id = #{menuId}
     <if test="queryString != null and queryString.length > 0">
-        and (id = #{queryString} or name = #{queryString})
+        and (id = #{queryString} or name like "%"#{queryString}"%")
     </if>
 </select>
 <!--查询一级菜单对应二级菜单项-->
@@ -125,7 +125,7 @@
     where level = 2
     and id = #{menuId}
     <if test="queryString != null and queryString.length > 0">
-        and (id = #{queryString} or name = #{queryString})
+        and (id = #{queryString} or name like "%"#{queryString}"%")
     </if>
 </select>
 
