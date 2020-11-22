@@ -155,7 +155,7 @@
     </select>
 
     <select id="AgeBandFunction" resultType="int">
-        select count(*) from t_member  where #{start} &gt; regTime  and  regTime &gt;= #{stop}
+        select count(*) from t_member  where #{start} &gt; birthday  and  birthday &gt;= #{stop}
 </select>
 
 <!--    <select id="AgeBandFunctionNull" resultType="int">
