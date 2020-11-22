@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>传智健康</title>
+    <meta name="description" content="传智健康">
+    <meta name="keywords" content="传智健康">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="hold-transition">
+<div id="app">
+    <div class="content-header">
+        <h1>菜单管理<!--<small>检查项管理</small>--></h1>
+        <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item><i class="fa fa-stethoscope"></i>菜单管理</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div class="app-container">
+        <div class="box">
+            <div class="filter-container">
+                <el-input placeholder="菜单ID/菜单名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
+                <el-button @click="findPage()" class="dalfBut">查询</el-button>
+                <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
+            </div>
+            <!--<el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                <el-table-column type="index" align="center" label="序号"></el-table-column>
+                <el-table-column prop="code" label="项目编码" align="center"></el-table-column>
+                <el-table-column prop="name" label="项目名称" align="center"></el-table-column>
+                <el-table-column label="适用性别" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.sex == '0' ? '不限' : scope.row.sex == '1' ? '男' : '女'}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="age" label="适用年龄" align="center"></el-table-column>
+                <el-table-column prop="remark" label="项目说明" align="center"></el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>-->
+            <!--<el-table
+                    :data="tableData"
+                    style="width: 100%;margin-bottom: 20px;"
+                    row-key="id"
+                    default-expand-all
+                    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">-->
+            <!--elementui 原始表格-->
+            <!--<div>
+            <el-table
+                    stripe
+                    highlight-current-row
+                    :data="tableData"
+                    style="width: 100%;margin-bottom: 20px;"
+                    row-key="id"
+                    lazy
+                    :load="load"
+                    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+                <el-table-column
+                        prop="date"
+                        label="日期"
+                        sortable
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="姓名"
+                        sortable
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="linkUrl"
+                        label="地址">
+                </el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            </div>-->
+            <div>
+                <!--<el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>-->
+                <!--菜单列表-->
+                <el-table
+                        stripe
+                        highlight-current-row
+                        :data="dataList"
+                        style="width: 100%;margin-bottom: 20px;"
+                        row-key="id"
+                        :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+                        <!--lazy
+                        :load="load"-->
+                    <el-table-column
+                            prop="id"
+                            label="菜单ID"
+                            align="center"
+                            sortable>
+                    </el-table-column>
+                    <el-table-column
+                            prop="name"
+                            label="菜单名称"
+                            align="center">
+                    </el-table-column>
+                    <el-table-column
+                            prop="linkUrl"
+                            label="链接地址"
+                            align="center"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="path"
+                            label="路径"
+                            align="center">
+                    </el-table-column>
+                    <el-table-column
+                            prop="priority"
+                            label="优先级"
+                            align="center">
+                    </el-table-column>
+                    <el-table-column
+                            prop="icon"
+                            label="图标"
+                            align="center">
+                        <template slot-scope="scope">
+                            <i class="fa" :class="scope.row.icon"></i>
+                        </template>
+                        <!--<i :class="icon"></i>-->
+                    </el-table-column>
+                    <el-table-column
+                            prop="description"
+                            label="说明"
+                            align="center">
+                    </el-table-column>
+                    <el-table-column label="操作" align="center">
+                        <template slot-scope="scope">
+                            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+            <!--分页组件-->
+            <!--<div class="pagination-container">
+                <el-pagination
+                        class="pagiantion"
+                        @current-change="handleCurrentChange"
+                        :current-page="pagination.currentPage"
+                        :page-size="pagination.pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="pagination.total">
+                </el-pagination>
+            </div>-->
+
+
+            <!-- 新增标签弹层 -->
+            <div class="add-form">
+                <el-dialog title="新增菜单项" :visible.sync="dialogFormVisible">
+                    <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="上级菜单">
+                                    <!--<el-input v-model="formData.parentMenuId"></el-input>-->
+                                    <el-select v-model="formData.parentMenuId" clearable placeholder="请选择">
+                                        <el-option
+                                                v-for="item in parentMenus"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="菜单名称" prop="name">
+                                    <el-input v-model="formData.name"/>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="优先级">
+                                    <el-input v-model="formData.priority"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="链接地址">
+                                    <el-input v-model="formData.linkUrl"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="图标" prop="icon">
+                                    <el-select v-model="formData.icon" placeholder="请选择">
+                                        <el-option
+                                                v-for="item in iconList"
+                                                :key="item.icon"
+                                                :label="item.icon"
+                                                :value="item.icon">
+                                            <i class="fa" :class="item.icon"></i>
+                                            <span v-html="item.icon"></span>
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="说明">
+                                    <el-input v-model="formData.description" type="textarea"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible = false">取消</el-button>
+                        <el-button type="primary" @click="handleAdd()">确定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+
+            <!-- 编辑标签弹层 -->
+            <div class="add-form">
+                <el-dialog title="编辑菜单项" :visible.sync="dialogFormVisible4Edit">
+                    <el-form ref="dataEditForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="上级菜单">
+                                    <!--<el-input v-model="formData.parentMenuId"></el-input>-->
+                                    <el-select v-model="formData.parentMenuId" clearable placeholder="请选择">
+                                        <el-option
+                                                v-for="item in parentMenus"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="菜单名称" prop="name">
+                                    <el-input v-model="formData.name"/>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="优先级">
+                                    <el-input v-model="formData.priority"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="链接地址">
+                                    <el-input v-model="formData.linkUrl"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="图标" prop="icon">
+                                    <el-select v-model="formData.icon" placeholder="请选择">
+                                        <el-option
+                                                v-for="item in iconList"
+                                                :key="item.icon"
+                                                :label="item.icon"
+                                                :value="item.icon">
+                                            <i class="fa" :class="item.icon"></i>
+                                            <span v-html="item.icon"></span>
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="说明">
+                                    <el-input v-model="formData.description" type="textarea"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+                        <el-button type="primary" @click="handleEdit()">确定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- 引入组件库 -->
+<script src="../js/vue.js"></script>
+<script src="../plugins/elementui/index.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script src="../js/axios-0.18.0.js"></script>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            //当前页要展示的分页列表数据
+            dataList: [],
+            parentMenus: [],
+            //{icon:'fa-address-book-o'},
+            iconList: [
+                {icon:'fa-address-book-o'},
+                {icon:'fa-address-card'},
+                {icon:'fa-address-card-o'},
+                {icon:'fa-adjust'},
+                {icon:'fa-american-sign-language-interpreting'},
+                {icon:'fa-anchor'},
+                {icon:'fa-archive'},
+                {icon:'fa-area-chart'},
+                {icon:'fa-arrows'},
+                {icon:'fa-arrows-h'},
+                {icon:'fa-arrows-v'},
+                {icon:'fa-asl-interpreting'},
+                {icon:'fa-assistive-listening-systems'},
+                {icon:'fa-asterisk'},
+                {icon:'fa-at'},
+                {icon:'fa-audio-description'},
+                {icon:'fa-automobile'},
+                {icon:'fa-balance-scale'},
+                {icon:'fa-ban'},
+                {icon:'fa-bank'},
+                {icon:'fa-bar-chart'},
+                {icon:'fa-bar-chart-o'},
+                {icon:'fa-barcode'},
+                {icon:'fa-bars'},
+                {icon:'fa-bath'},
+                {icon:'fa-bathtub'},
+                {icon:'fa-battery'},
+                {icon:'fa-battery-0'},
+                {icon:'fa-battery-1'},
+                {icon:'fa-battery-2'},
+                {icon:'fa-battery-3'},
+                {icon:'fa-battery-4'},
+                {icon:'fa-battery-empty'},
+                {icon:'fa-battery-full'},
+                {icon:'fa-battery-half'},
+                {icon:'fa-battery-quarter'},
+                {icon:'fa-battery-three-quarters'},
+                {icon:'fa-bed'},
+                {icon:'fa-beer'},
+                {icon:'fa-bell'},
+                {icon:'fa-bell-o'},
+                {icon:'fa-bell-slash'},
+                {icon:'fa-bell-slash-o'},
+                {icon:'fa-bicycle'},
+                {icon:'fa-binoculars'},
+                {icon:'fa-birthday-cake'},
+                {icon:'fa-blind'},
+                {icon:'fa-bluetooth'},
+                {icon:'fa-bluetooth-b'},
+                {icon:'fa-bolt'},
+                {icon:'fa-bomb'},
+                {icon:'fa-book'},
+                {icon:'fa-bookmark'},
+                {icon:'fa-bookmark-o'},
+                {icon:'fa-braille'},
+                {icon:'fa-briefcase'},
+                {icon:'fa-bug'},
+                {icon:'fa-building'},
+                {icon:'fa-building-o'},
+                {icon:'fa-bullhorn'},
+                {icon:'fa-bullseye'},
+                {icon:'fa-bus'},
+                {icon:'fa-cab'},
+                {icon:'fa-calculator'},
+                {icon:'fa-calendar'},
+                {icon:'fa-calendar-check-o'},
+                {icon:'fa-calendar-minus-o'},
+                {icon:'fa-calendar-o'},
+                {icon:'fa-calendar-plus-o'},
+                {icon:'fa-calendar-times-o'},
+                {icon:'fa-camera'},
+                {icon:'fa-camera-retro'},
+                {icon:'fa-car'},
+                {icon:'fa-caret-square-o-down'},
+                {icon:'fa-caret-square-o-left'},
+                {icon:'fa-caret-square-o-right'},
+                {icon:'fa-caret-square-o-up'},
+                {icon:'fa-cart-arrow-down'},
+                {icon:'fa-cart-plus'},
+                {icon:'fa-cc'},
+                {icon:'fa-certificate'},
+                {icon:'fa-check'},
+                {icon:'fa-check-circle'},
+                {icon:'fa-check-circle-o'},
+                {icon:'fa-check-square'},
+                {icon:'fa-check-square-o'},
+                {icon:'fa-child'},
+                {icon:'fa-circle'},
+                {icon:'fa-circle-o'},
+                {icon:'fa-circle-o-notch'},
+                {icon:'fa-circle-thin'},
+                {icon:'fa-clock-o'},
+                {icon:'fa-clone'},
+                {icon:'fa-close'},
+                {icon:'fa-cloud'},
+                {icon:'fa-cloud-download'},
+                {icon:'fa-cloud-upload'},
+                {icon:'fa-code'},
+                {icon:'fa-code-fork'},
+                {icon:'fa-coffee'},
+                {icon:'fa-cog'},
+                {icon:'fa-cogs'},
+                {icon:'fa-comment'},
+                {icon:'fa-comment-o'},
+                {icon:'fa-commenting'},
+                {icon:'fa-commenting-o'},
+                {icon:'fa-comments'},
+                {icon:'fa-comments-o'},
+                {icon:'fa-compass'},
+                {icon:'fa-copyright'},
+                {icon:'fa-creative-commons'},
+                {icon:'fa-credit-card'},
+                {icon:'fa-credit-card-alt'},
+                {icon:'fa-crop'},
+                {icon:'fa-crosshairs'},
+                {icon:'fa-cube'},
+                {icon:'fa-cubes'},
+                {icon:'fa-cutlery'},
+                {icon:'fa-dashboard'},
+                {icon:'fa-database'},
+                {icon:'fa-deaf'},
+                {icon:'fa-deafness'},
+                {icon:'fa-desktop'},
+                {icon:'fa-diamond'},
+                {icon:'fa-dot-circle-o'},
+                {icon:'fa-download'},
+                {icon:'fa-drivers-license'},
+                {icon:'fa-drivers-license-o'},
+                {icon:'fa-edit'},
+                {icon:'fa-ellipsis-h'},
+                {icon:'fa-ellipsis-v'},
+                {icon:'fa-envelope'},
+                {icon:'fa-envelope-o'},
+                {icon:'fa-envelope-open'},
+                {icon:'fa-envelope-open-o'},
+                {icon:'fa-envelope-square'},
+                {icon:'fa-eraser'},
+                {icon:'fa-exchange'},
+                {icon:'fa-exclamation'},
+                {icon:'fa-exclamation-circle'},
+                {icon:'fa-exclamation-triangle'},
+                {icon:'fa-external-link'},
+                {icon:'fa-external-link-square'},
+                {icon:'fa-eye'},
+                {icon:'fa-eye-slash'},
+                {icon:'fa-eyedropper'},
+                {icon:'fa-fax'},
+                {icon:'fa-feed'},
+                {icon:'fa-female'},
+                {icon:'fa-fighter-jet'},
+                {icon:'fa-file-archive-o'},
+                {icon:'fa-file-audio-o'},
+                {icon:'fa-file-code-o'},
+                {icon:'fa-file-excel-o'},
+                {icon:'fa-file-image-o'},
+                {icon:'fa-file-movie-o'},
+                {icon:'fa-file-pdf-o'},
+                {icon:'fa-file-photo-o'},
+                {icon:'fa-file-picture-o'},
+                {icon:'fa-file-powerpoint-o'},
+                {icon:'fa-file-sound-o'},
+                {icon:'fa-file-video-o'},
+                {icon:'fa-file-word-o'},
+                {icon:'fa-file-zip-o'},
+                {icon:'fa-film'},
+                {icon:'fa-filter'},
+                {icon:'fa-fire'},
+                {icon:'fa-fire-extinguisher'},
+                {icon:'fa-flag'},
+                {icon:'fa-flag-checkered'},
+                {icon:'fa-flag-o'},
+                {icon:'fa-flash'},
+                {icon:'fa-flask'},
+                {icon:'fa-folder'},
+                {icon:'fa-folder-o'},
+                {icon:'fa-folder-open'},
+                {icon:'fa-folder-open-o'},
+                {icon:'fa-frown-o'},
+                {icon:'fa-futbol-o'},
+                {icon:'fa-gamepad'},
+                {icon:'fa-gavel'},
+                {icon:'fa-gear'},
+                {icon:'fa-gears'},
+                {icon:'fa-gift'},
+                {icon:'fa-glass'},
+                {icon:'fa-globe'},
+                {icon:'fa-graduation-cap'},
+                {icon:'fa-group'},
+                {icon:'fa-hand-grab-o'},
+                {icon:'fa-hand-lizard-o'},
+                {icon:'fa-hand-paper-o'},
+                {icon:'fa-hand-peace-o'},
+                {icon:'fa-hand-pointer-o'},
+                {icon:'fa-hand-rock-o'},
+                {icon:'fa-hand-scissors-o'},
+                {icon:'fa-hand-spock-o'},
+                {icon:'fa-hand-stop-o'},
+                {icon:'fa-handshake-o'},
+                {icon:'fa-hard-of-hearing'},
+                {icon:'fa-hashtag'},
+                {icon:'fa-hdd-o'},
+                {icon:'fa-headphones'},
+                {icon:'fa-heart'},
+                {icon:'fa-heart-o'},
+                {icon:'fa-heartbeat'},
+                {icon:'fa-history'},
+                {icon:'fa-home'},
+                {icon:'fa-hotel'},
+                {icon:'fa-hourglass'},
+                {icon:'fa-hourglass-1'},
+                {icon:'fa-hourglass-2'},
+                {icon:'fa-hourglass-3'},
+                {icon:'fa-hourglass-end'},
+                {icon:'fa-hourglass-half'},
+                {icon:'fa-hourglass-o'},
+                {icon:'fa-hourglass-start'},
+                {icon:'fa-i-cursor'},
+                {icon:'fa-id-badge'},
+                {icon:'fa-id-card'},
+                {icon:'fa-id-card-o'},
+                {icon:'fa-image'},
+                {icon:'fa-inbox'},
+                {icon:'fa-industry'},
+                {icon:'fa-info'},
+                {icon:'fa-info-circle'},
+                {icon:'fa-institution'},
+                {icon:'fa-key'},
+                {icon:'fa-keyboard-o'},
+                {icon:'fa-language'},
+                {icon:'fa-laptop'},
+                {icon:'fa-leaf'},
+                {icon:'fa-legal'},
+                {icon:'fa-lemon-o'},
+                {icon:'fa-level-down'},
+                {icon:'fa-level-up'},
+                {icon:'fa-life-bouy'},
+                {icon:'fa-life-buoy'},
+                {icon:'fa-life-ring'},
+                {icon:'fa-life-saver'},
+                {icon:'fa-lightbulb-o'},
+                {icon:'fa-line-chart'},
+                {icon:'fa-location-arrow'},
+                {icon:'fa-lock'},
+                {icon:'fa-low-vision'},
+                {icon:'fa-magic'},
+                {icon:'fa-magnet'},
+                {icon:'fa-mail-forward'},
+                {icon:'fa-mail-reply'},
+                {icon:'fa-mail-reply-all'},
+                {icon:'fa-male'},
+                {icon:'fa-map'},
+                {icon:'fa-map-marker'},
+                {icon:'fa-map-o'},
+                {icon:'fa-map-pin'},
+                {icon:'fa-map-signs'},
+                {icon:'fa-meh-o'},
+                {icon:'fa-microchip'},
+                {icon:'fa-microphone'},
+                {icon:'fa-microphone-slash'},
+                {icon:'fa-minus'},
+                {icon:'fa-minus-circle'},
+                {icon:'fa-minus-square'},
+                {icon:'fa-minus-square-o'},
+                {icon:'fa-mobile'},
+                {icon:'fa-mobile-phone'},
+                {icon:'fa-money'},
+                {icon:'fa-moon-o'},
+                {icon:'fa-mortar-board'},
+                {icon:'fa-motorcycle'},
+                {icon:'fa-mouse-pointer'},
+                {icon:'fa-music'},
+                {icon:'fa-navicon'},
+                {icon:'fa-newspaper-o'},
+                {icon:'fa-object-group'},
+                {icon:'fa-object-ungroup'},
+                {icon:'fa-paint-brush'},
+                {icon:'fa-paper-plane'},
+                {icon:'fa-paper-plane-o'},
+                {icon:'fa-paw'},
+                {icon:'fa-pencil'},
+                {icon:'fa-pencil-square'},
+                {icon:'fa-pencil-square-o'},
+                {icon:'fa-percent'},
+                {icon:'fa-phone'},
+                {icon:'fa-phone-square'},
+                {icon:'fa-photo'},
+                {icon:'fa-picture-o'},
+                {icon:'fa-pie-chart'},
+                {icon:'fa-plane'},
+                {icon:'fa-plug'},
+                {icon:'fa-plus'},
+                {icon:'fa-plus-circle'},
+                {icon:'fa-plus-square'},
+                {icon:'fa-plus-square-o'},
+                {icon:'fa-podcast'},
+                {icon:'fa-power-off'},
+                {icon:'fa-print'},
+                {icon:'fa-puzzle-piece'},
+                {icon:'fa-qrcode'},
+                {icon:'fa-question'},
+                {icon:'fa-question-circle'},
+                {icon:'fa-question-circle-o'},
+                {icon:'fa-quote-left'},
+                {icon:'fa-quote-right'},
+                {icon:'fa-random'},
+                {icon:'fa-recycle'},
+                {icon:'fa-refresh'},
+                {icon:'fa-registered'},
+                {icon:'fa-remove'},
+                {icon:'fa-reorder'},
+                {icon:'fa-reply'},
+                {icon:'fa-reply-all'},
+                {icon:'fa-retweet'},
+                {icon:'fa-road'},
+                {icon:'fa-rocket'},
+                {icon:'fa-rss'},
+                {icon:'fa-rss-square'},
+                {icon:'fa-s15'},
+                {icon:'fa-search'},
+                {icon:'fa-search-minus'},
+                {icon:'fa-search-plus'},
+                {icon:'fa-send'},
+                {icon:'fa-send-o'},
+                {icon:'fa-server'},
+                {icon:'fa-share'},
+                {icon:'fa-share-alt'},
+                {icon:'fa-share-alt-square'},
+                {icon:'fa-share-square'},
+                {icon:'fa-share-square-o'},
+                {icon:'fa-shield'},
+                {icon:'fa-ship'},
+                {icon:'fa-shopping-bag'},
+                {icon:'fa-shopping-basket'},
+                {icon:'fa-shopping-cart'},
+                {icon:'fa-shower'},
+                {icon:'fa-sign-in'},
+                {icon:'fa-sign-language'},
+                {icon:'fa-sign-out'},
+                {icon:'fa-signal'},
+                {icon:'fa-signing'},
+                {icon:'fa-sitemap'},
+                {icon:'fa-sliders'},
+                {icon:'fa-smile-o'},
+                {icon:'fa-snowflake-o'},
+                {icon:'fa-soccer-ball-o'},
+                {icon:'fa-sort'},
+                {icon:'fa-sort-alpha-asc'},
+                {icon:'fa-sort-alpha-desc'},
+                {icon:'fa-sort-amount-asc'},
+                {icon:'fa-sort-amount-desc'},
+                {icon:'fa-sort-asc'},
+                {icon:'fa-sort-desc'},
+                {icon:'fa-sort-down'},
+                {icon:'fa-sort-numeric-asc'},
+                {icon:'fa-sort-numeric-desc'},
+                {icon:'fa-sort-up'},
+                {icon:'fa-space-shuttle'},
+                {icon:'fa-spinner'},
+                {icon:'fa-spoon'},
+                {icon:'fa-square'},
+                {icon:'fa-square-o'},
+                {icon:'fa-star'},
+                {icon:'fa-star-half'},
+                {icon:'fa-star-half-empty'},
+                {icon:'fa-star-half-full'},
+                {icon:'fa-star-half-o'},
+                {icon:'fa-star-o'},
+                {icon:'fa-sticky-note'},
+                {icon:'fa-sticky-note-o'},
+                {icon:'fa-street-view'},
+                {icon:'fa-suitcase'},
+                {icon:'fa-sun-o'},
+                {icon:'fa-support'},
+                {icon:'fa-tablet'},
+                {icon:'fa-tachometer'},
+                {icon:'fa-tag'},
+                {icon:'fa-tags'},
+                {icon:'fa-tasks'},
+                {icon:'fa-taxi'},
+                {icon:'fa-television'},
+                {icon:'fa-terminal'},
+                {icon:'fa-thermometer'},
+                {icon:'fa-thermometer-0'},
+                {icon:'fa-thermometer-1'},
+                {icon:'fa-thermometer-2'},
+                {icon:'fa-thermometer-3'},
+                {icon:'fa-thermometer-4'},
+                {icon:'fa-thermometer-empty'},
+                {icon:'fa-thermometer-full'},
+                {icon:'fa-thermometer-half'},
+                {icon:'fa-thermometer-quarter'},
+                {icon:'fa-thermometer-three-quarters'},
+                {icon:'fa-thumb-tack'},
+                {icon:'fa-thumbs-down'},
+                {icon:'fa-thumbs-o-down'},
+                {icon:'fa-thumbs-o-up'},
+                {icon:'fa-thumbs-up'},
+                {icon:'fa-ticket'},
+                {icon:'fa-times'},
+                {icon:'fa-times-circle'},
+                {icon:'fa-times-circle-o'},
+                {icon:'fa-times-rectangle'},
+                {icon:'fa-times-rectangle-o'},
+                {icon:'fa-tint'},
+                {icon:'fa-toggle-down'},
+                {icon:'fa-toggle-left'},
+                {icon:'fa-toggle-off'},
+                {icon:'fa-toggle-on'},
+                {icon:'fa-toggle-right'},
+                {icon:'fa-toggle-up'},
+                {icon:'fa-trademark'},
+                {icon:'fa-trash'},
+                {icon:'fa-trash-o'},
+                {icon:'fa-tree'},
+                {icon:'fa-trophy'},
+                {icon:'fa-truck'},
+                {icon:'fa-tty'},
+                {icon:'fa-tv'},
+                {icon:'fa-umbrella'},
+                {icon:'fa-universal-access'},
+                {icon:'fa-university'},
+                {icon:'fa-unlock'},
+                {icon:'fa-unlock-alt'},
+                {icon:'fa-unsorted'},
+                {icon:'fa-upload'},
+                {icon:'fa-user'},
+                {icon:'fa-user-circle'},
+                {icon:'fa-user-circle-o'},
+                {icon:'fa-user-o'},
+                {icon:'fa-user-plus'},
+                {icon:'fa-user-secret'},
+                {icon:'fa-user-times'},
+                {icon:'fa-users'},
+                {icon:'fa-vcard'},
+                {icon:'fa-vcard-o'},
+                {icon:'fa-video-camera'},
+                {icon:'fa-volume-control-phone'},
+                {icon:'fa-volume-down'},
+                {icon:'fa-volume-off'},
+                {icon:'fa-volume-up'},
+                {icon:'fa-warning'},
+                {icon:'fa-wheelchair'},
+                {icon:'fa-wheelchair-alt'},
+                {icon:'fa-wifi'},
+                {icon:'fa-window-close'},
+                {icon:'fa-window-close-o'},
+                {icon:'fa-window-maximize'},
+                {icon:'fa-window-minimize'},
+                {icon:'fa-window-restore'},
+                {icon:'fa-wrench'}
+            ],
+            pagination: {//分页相关模型数据
+                currentPage: 1,//当前页码
+                pageSize:10,//每页显示的记录数
+                total:0,//总记录数
+                queryString:null//查询条件
+            },
+            formData: {},//表单数据
+            dialogFormVisible: false,//增加表单是否可见
+            dialogFormVisible4Edit:false,//编辑表单是否可见
+            rules: {//校验规则
+                icon: [{ required: true, message: '图标为必选项', trigger: 'blur' }],
+                name: [{ required: true, message: '菜单名称为必填项', trigger: 'blur' }]
+            }
+        },
+        //钩子函数，VUE对象初始化完成后自动执行
+        created() {
+            //查询所有检查项列表
+            this.findPage();
+        },
+        methods: {
+            // 弹出添加窗口
+            handleCreate() {
+                //弹出新增检查项窗口
+                this.dialogFormVisible = true;
+                this.resetForm();
+                this.initParentMenus();
+            },
+            //添加
+            handleAdd () {
+                //前端验证非常重要
+                this.$refs["dataAddForm"].validate((valid) => {
+                    if (valid) {
+                        //发送请求将表单数据提交后台
+                        axios.post('/menu/add.do',this.formData).then(res=>{
+                            //无论执行成功还是失败都关闭窗口
+                            this.dialogFormVisible = false;
+                            this.$message({
+                                message: res.data.message,
+                                type: res.data.flag ? 'success':'error'
+                            });
+                            this.findPage();//分页查询
+                        })
+                    }
+                });
+            },
+            initParentMenus() {
+                axios.get("/menu/parentMenus.do").then(response=>{
+                    if (response.data.flag) {
+                        this.parentMenus = response.data.data;
+                    }else{
+                        this.$message.error(response.data.message);
+                    }
+                });
+            },
+            //分页查询
+            findPage() {
+                /*var parms = {
+                    currentPage:this.pagination.currentPage,
+                    pageSize:this.pagination.pageSize,
+                    queryString:this.pagination.queryString
+                }
+
+                axios.post("/menu/findPage.do",parms).then(res=>{
+                    //后台返回的是PageResult total rows
+                    this.pagination.total = res.data.total;
+                    this.dataList = res.data.rows;
+                })*/
+                //this.dataList = res.data.data; //没有分页
+                //发送请求获取检查项列表数据
+                axios.get("/menu/findAll.do").then(res=>{
+                    //res.data;//Result对象
+                    if(res.data.flag){
+                        this.dataList = res.data.data;
+                        /*this.$message({
+                            message: res.data.message,
+                            type: 'success'
+                        });*/
+                        console.log(res.data.message)
+                    }
+                    else {
+                        this.$message.error(res.data.message);
+                    }
+                })
+            },
+            // 重置表单
+            resetForm() {
+                this.formData = {};//清空
+            },
+            // 弹出编辑窗口
+            handleUpdate(row) {
+                this.resetForm();
+                //弹出窗口
+                this.dialogFormVisible4Edit = true;
+                //根据检查项id查询检查项对象 回显到弹出窗口中
+                axios.get("/menu/findById.do?id="+row.id).then(res=>{
+                    this.formData = res.data.data;
+                })
+            },
+            //树形表格与懒加载
+            /*load(tree, treeNode, resolve) {
+                setTimeout(() => {
+                    resolve([
+                        {
+                            id: 31,
+                            date: '2016-05-01',
+                            name: '王小虎',
+                            linkUrl: '上海市普陀区金沙江路 1519 弄'
+                        }, {
+                            id: 32,
+                            date: '2016-05-01',
+                            name: '王小虎',
+                            linkUrl: '上海市普陀区金沙江路 1519 弄'
+                        }
+                    ])
+                }, 100)
+            },*/
+            //编辑
+            handleEdit() {
+                //1.验证表单数据（省略）
+                //2.验证通过发送请求 带上检查项对象
+                axios.post("/menu/edit.do",this.formData).then(res=>{
+                    this.dialogFormVisible4Edit = false;
+                    this.$message({
+                        message: res.data.message,
+                        type: res.data.flag ? 'success':'error'
+                    });
+                    this.findPage();//分页查询
+                })
+            },
+            //切换页码
+            handleCurrentChange(currentPage) {
+                this.pagination.currentPage = currentPage;
+                this.findPage();
+            },
+            showMessage(error){
+                if(error == 'Error: Request failed with status code 403'){
+                    this.$message({
+                        message: "权限不足，请联系管理员",
+                        type: 'error'
+                    });
+                }else
+                {
+                    this.$message({
+                        message: "系统异常，请联系管理员",
+                        type: 'error'
+                    });
+                }
+            },
+            // 删除
+            handleDelete(row) {
+                //alert(row.id);
+                this.$confirm('此操作将永久删除菜单项, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    //发送删除请求
+                    axios.get("/menu/deleteById.do?id="+row.id).then(res=>{
+                        this.$message({
+                            message: res.data.message,
+                            type: res.data.flag ? 'success':'error'
+                        });
+                        this.findPage();//分页查询
+                    }).catch((error)=>{ //异常信息
+                        this.showMessage(error);
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            }
+        }
+    })
+</script>
+</html>
