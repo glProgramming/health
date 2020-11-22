@@ -2,11 +2,19 @@ package com.itheima.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.itheima.constant.MessageConstant;
+import com.itheima.entity.PageResult;
+import com.itheima.entity.QueryPageBean;
 import com.itheima.entity.Result;
 import com.itheima.pojo.Menu;
 import com.itheima.service.MenuService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.GET;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +30,15 @@ public class MenuController {
     private MenuService menuService;
 
     /**
+     * 获取当前登录用户名
+     * @return
+     */
+    public String getUserName(){
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return user.getUsername();
+    }
+
+    /**
      * 查询所有菜单项数据
      * @return
      */
@@ -29,13 +46,29 @@ public class MenuController {
     public Result findAll(){
         try {
             //调用业务服务
-            List<Menu> menuList = menuService.findAll();
+            List<Menu> menuList = menuService.findAll(getUserName());
             //处理结果，查询成功
             return new Result(true, MessageConstant.GET_MENU_SUCCESS,menuList);
         } catch (Exception e) {
             e.printStackTrace();
             //查询失败
             return new Result(false, MessageConstant.GET_MENU_FAIL);
+        }
+    }
+
+    /**
+     * 菜单项分页查询
+     * @param
+     * @return
+     */
+    @PostMapping("/findPage")
+    public Result findPage(@RequestBody QueryPageBean queryPageBean) {
+        try {
+            List<Menu> menuList = menuService.findPage(queryPageBean.getQueryString(),getUserName());
+            return new Result(true,MessageConstant.GET_MENULIST_SUCCESS,menuList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false,MessageConstant.GET_MENULIST_FAIL);
         }
     }
 
@@ -48,12 +81,10 @@ public class MenuController {
     public Result add(@RequestBody Menu menu){
         try {
             //调用业务服务
-            menuService.add(menu);
-            //处理结果，查询成功
-            return new Result(true, MessageConstant.ADD_MENU_SUCCESS);
+            return menuService.add(menu,getUserName());
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result(false, MessageConstant.ADD_MENU_FAIL);
+            return new Result(false,MessageConstant.ADD_MENU_FAIL);
         }
     }
 
@@ -85,10 +116,10 @@ public class MenuController {
             //调用业务服务
             Menu menu = menuService.findById(id);
             //处理结果，查询成功
-            return new Result(true, MessageConstant.GET_MENU_SUCCESS,menu);
+            return new Result(true,MessageConstant.GET_MENU_SUCCESS,menu);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result(false, MessageConstant.GET_MENU_FAIL);
+            return new Result(false,MessageConstant.GET_MENU_FAIL);
         }
     }
 
@@ -100,13 +131,11 @@ public class MenuController {
     @PostMapping("/edit")
     public Result edit(@RequestBody Menu menu){
         try {
-            //调用业务服务
-            menuService.edit(menu);
-            //处理结果，查询成功
-            return new Result(true, MessageConstant.EDIT_MENU_SUCCESS);
+            //调用业务服务,返回结果
+            return menuService.edit(menu);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result(false, MessageConstant.EDIT_MENU_FAIL);
+            return new Result(false,MessageConstant.EDIT_MENU_FAIL);
         }
     }
 
@@ -121,10 +150,13 @@ public class MenuController {
             //调用业务服务
             menuService.deleteById(id);
             //处理结果，查询成功
-            return new Result(true, MessageConstant.DELETE_MENU_SUCCESS);
+            return new Result(true,MessageConstant.DELETE_MENU_SUCCESS);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return new Result(false, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result(false, MessageConstant.DELETE_MENU_FAIL);
+            return new Result(false,MessageConstant.DELETE_MENU_FAIL);
         }
     }
 
@@ -136,12 +168,12 @@ public class MenuController {
     public Result getMenuList(){
         try {
             //调用业务服务
-            List<Menu> menuList = menuService.getMenuList();
+            List<Menu> menuList = menuService.getMenuList(getUserName());
             //处理结果，查询成功
-            return new Result(true, MessageConstant.GET_MENULIST_SUCCESS,menuList);
+            return new Result(true,MessageConstant.GET_MENULIST_SUCCESS,menuList);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result(false, MessageConstant.GET_MENULIST_FAIL);
+            return new Result(false,MessageConstant.GET_MENULIST_FAIL);
         }
     }
 

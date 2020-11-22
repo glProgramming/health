@@ -1,5 +1,6 @@
 package com.itheima.service;
 
+import com.itheima.entity.Result;
 import com.itheima.pojo.Menu;
 
 import java.util.List;
@@ -10,14 +11,14 @@ public interface MenuService {
      * 查询所有菜单项数据
      * @return
      */
-    List<Menu> findAll();
+    List<Menu> findAll(String username);
 
     /**
      * 新增菜单项数据
      * @param menu
      * @return
      */
-    void add(Menu menu);
+    Result add(Menu menu, String username);
 
     /**
      * 查询新增菜单上级菜单列表
@@ -37,7 +38,7 @@ public interface MenuService {
      * @param menu
      * @return
      */
-    void edit(Menu menu);
+    Result edit(Menu menu);
 
     /**
      * 根据id删除菜单项
@@ -50,6 +51,12 @@ public interface MenuService {
      * 获取当前登录用户菜单列表
      * @return
      */
-    List<Menu> getMenuList();
+    List<Menu> getMenuList(String username);
 
+    /**
+     * 菜单项查询
+     * @param queryString
+     * @return
+     */
+    List<Menu> findPage(String queryString, String username);
 }

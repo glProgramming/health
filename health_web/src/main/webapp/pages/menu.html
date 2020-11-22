@@ -19,7 +19,7 @@
         <h1>菜单管理<!--<small>检查项管理</small>--></h1>
         <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item><i class="fa fa-stethoscope"></i>菜单管理</el-breadcrumb-item>
+            <el-breadcrumb-item>菜单管理</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
     <div class="app-container">
@@ -785,7 +785,7 @@
         //钩子函数，VUE对象初始化完成后自动执行
         created() {
             //查询所有检查项列表
-            this.findPage();
+            this.findAll();
         },
         methods: {
             // 弹出添加窗口
@@ -822,20 +822,20 @@
                     }
                 });
             },
-            //分页查询
+            //条件查询
             findPage() {
-                /*var parms = {
-                    currentPage:this.pagination.currentPage,
-                    pageSize:this.pagination.pageSize,
+                var parms = {
                     queryString:this.pagination.queryString
                 }
 
                 axios.post("/menu/findPage.do",parms).then(res=>{
-                    //后台返回的是PageResult total rows
-                    this.pagination.total = res.data.total;
-                    this.dataList = res.data.rows;
-                })*/
+                    //this.pagination.total = res.data.total;
+                    this.dataList = res.data.data;
+                })
                 //this.dataList = res.data.data; //没有分页
+
+            },
+            findAll(){
                 //发送请求获取检查项列表数据
                 axios.get("/menu/findAll.do").then(res=>{
                     //res.data;//Result对象
@@ -866,24 +866,6 @@
                     this.formData = res.data.data;
                 })
             },
-            //树形表格与懒加载
-            /*load(tree, treeNode, resolve) {
-                setTimeout(() => {
-                    resolve([
-                        {
-                            id: 31,
-                            date: '2016-05-01',
-                            name: '王小虎',
-                            linkUrl: '上海市普陀区金沙江路 1519 弄'
-                        }, {
-                            id: 32,
-                            date: '2016-05-01',
-                            name: '王小虎',
-                            linkUrl: '上海市普陀区金沙江路 1519 弄'
-                        }
-                    ])
-                }, 100)
-            },*/
             //编辑
             handleEdit() {
                 //1.验证表单数据（省略）

@@ -68,6 +68,8 @@ public class MessageConstant {
     public static final String GET_MENU_FAIL = "获取当前登录用户菜单失败";
     public static final String ADD_MENU_SUCCESS = "新增当前登录用户菜单项成功";
     public static final String ADD_MENU_FAIL = "新增当前登录用户菜单项失败";
+    public static final String HAS_MENU = "此菜单项已存在";
+    public static final String DELETE_MENU_FAIL2 = "该菜单包含下级菜单无法删除，请先删除下级菜单";
     public static final String EDIT_MENU_SUCCESS = "编辑当前登录用户菜单项成功";
     public static final String EDIT_MENU_FAIL = "编辑当前登录用户菜单项失败";
     public static final String DELETE_MENU_SUCCESS = "删除当前登录用户菜单项成功";
