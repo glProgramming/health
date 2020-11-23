@@ -4,6 +4,37 @@ package com.itheima.constant;
  * 消息常量
  */
 public class MessageConstant {
+    public static final String ADD_PERMISSION_SUCCESS = "新增权限项成功";
+    public static final String ADD_PERMISSION_FAIL = "新增权限项失败";
+    public static final String DELETE_PERMISSION_FAIL = "删除权限失败";
+    public static final String DELETE_PERMISSION_SUCCESS = "删除权限成功";
+    public static final String DELETE_PERMISSION_FAIL2 = "权限已经关联角色无法删除";
+
+    public static final String QUERY_PERMISSION_SUCCESS = "查询权限成功";
+    public static final String QUERY_PERMISSION_FAIL = "查询权限失败";
+
+    public static final String EDIT_PERMISSION_FAIL = "编辑权限失败";
+    public static final String EDIT_PERMISSION_SUCCESS = "编辑权限成功";
+    //------------------------------
+    public static final String DELETE_MENU_FAIL3 = "角色已经关联菜单无法删除";
+    public static final String DELETE_ROLE_FAIL2 = "角色已经关联用户无法删除";
+
+    public static final String DELETE_ROLE_SUCCESS = "删除角色成功";
+    public static final String DELETE_ROLE_FAIL = "删除角色失败";
+    public static final String ADD_ROLE_SUCCESS = "新增角色成功";
+    public static final String ADD_ROLE_FAIL = "新增角色失败";
+    public static final String QUERY_ROLE_SUCCESS = "查询角色成功";
+    public static final String QUERY_ROLE_FAIL = "查询角色失败";
+    public static final String EDIT_ROLE_FAIL = "编辑角色失败";
+    public static final String EDIT_ROLE_SUCCESS = "编辑角色成功";
+    //------------------------------
+
+    public static final String QUERY_USER_SUCCESS = "查询用户成功";
+    public static final String QUERY_USER_FAIL = "查询用户失败";
+    //--------------------------------
+    public static final String QUERY_MENU_SUCCESS = "查询菜单成功";
+    public static final String QUERY_MENU_FAIL = "查询菜单失败";
+    //--------------------------------
     public static final String DELETE_CHECKITEM_FAIL = "删除检查项失败";
     public static final String DELETE_CHECKITEM_FAIL2 = "检查项已经关联检查组无法删除";
     public static final String DELETE_SETMEAL_FAIL = "套餐已经关联检查组无法删除";

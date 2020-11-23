@@ -17,4 +17,8 @@
     <select id="findUserByUsername" parameterType="string" resultMap="userMap">
         select * from t_user where username = #{username}
     </select>
+    <!-- 功能三: 新增角色项 (关联的用户项回显,查询所有) -->
+    <select id="findAll" resultType="User">
+        select * from t_user
+    </select>
 </mapper>

@@ -270,4 +270,12 @@ public class MenuServiceImpl implements MenuService {
         }
         return parentList;
     }
+
+    /**
+     *  1 新增角色项的回显(查询所有的菜单项)
+     */
+    @Override
+    public List<Menu> findAll1() {
+        return menuDao.findAll1();
+    }
 }

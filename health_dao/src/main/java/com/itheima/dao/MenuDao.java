@@ -162,4 +162,9 @@ public interface MenuDao {
      * @return
      */
 /*    List<Menu> getMenuList();*/
+
+    /**
+     *  1 新增角色项的回显(查询所有的菜单项)
+     */
+    List<Menu> findAll1();
 }

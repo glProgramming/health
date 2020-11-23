@@ -6,4 +6,49 @@
     <select id="findPermissionsByRoleId" parameterType="int" resultType="com.itheima.pojo.Permission">
         select tp.* from t_permission tp,t_role_permission trp where tp.id = trp.permission_id and trp.role_id = #{roleId}
     </select>
+
+    <!--第一个 功能进行权限页面的分页查询-->
+    <!--权限项的分页查询-->
+    <select id="selectByCondition" parameterType="string" resultType="com.itheima.pojo.Permission">
+        select * from t_permission
+        <if test="value != null and value.length > 0">
+            where name like concat("%", #{value},"%") or keyword like concat("%", #{value},"%")
+        </if>
+    </select>
+
+    <!-- 第二功能 2.1 根据前端新增数据， 查询 有无对应的permission -->
+    <select id="findPermissionCountBy" parameterType="Permission" resultType="Permission">
+        select * from t_permission where name = #{name} or keyword=#{keyword}
+    </select>
+
+    <!--第二功能 2.2 新增permission 项-->
+    <insert id="add" parameterType="Permission" >
+        insert into t_permission (name,keyword,description)
+   values (#{name},#{keyword},#{description})
+    </insert>
+
+    <!--3.1 查询中间表有没有-->
+    <select id="findCountByPermissionId" parameterType="int" resultType="int">
+        select count(*) from t_role_permission where permission_id =#{permissionId}
+    </select>
+    <!--第三：如果中间表没有记录  根据权限id删除检查项记录-->
+    <select id="deleteById" parameterType="int" >
+        delete from t_permission where id=#{permissionId}
+    </select>
+
+    <!--4.1回显, 根据编辑行的id, 把查询到的权限信息 返回前端-->
+    <select id="findById" parameterType="Integer" resultType="Permission">
+        select * from t_permission where id=#{permissionId}
+    </select>
+
+    <!--四、 4.2 根据权限id更新权限详情-->
+    <update id="edit" parameterType="Permission" >
+        update t_permission set name=#{name},keyword=#{keyword},description =#{description}
+        where id=#{id}
+    </update>
+
+    <!--5.1 新增角色项的回显(查询所有的权限项)-->
+    <select id="findAll" resultType="Permission">
+        select * from  t_permission
+    </select>
 </mapper>

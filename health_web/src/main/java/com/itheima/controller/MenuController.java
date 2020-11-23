@@ -176,5 +176,17 @@ public class MenuController {
             return new Result(false,MessageConstant.GET_MENULIST_FAIL);
         }
     }
-
+    /**
+     *  1 新增角色项的回显(查询所有的菜单项)
+     */
+    @RequestMapping("/findAll1")
+    public Result findAll1() {
+        try {
+            List<Menu> menuList = menuService.findAll1();
+            return new Result(true, MessageConstant.QUERY_MENU_SUCCESS,menuList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, MessageConstant.QUERY_MENU_FAIL);
+        }
+    }
 }
