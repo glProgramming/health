@@ -2,6 +2,8 @@ package com.itheima.dao;
 
 import com.itheima.pojo.User;
 
+import java.util.List;
+
 /**
  * 用户持久层接口
  */
@@ -12,4 +14,9 @@ public interface UserDao {
      * @return
      */
     User findUserByUsername(String username);
+
+    /**
+     *  功能三: 新增角色项 (关联的用户项回显,查询所有)
+     */
+    List<User> findAll();
 }

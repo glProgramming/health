@@ -144,4 +144,9 @@
     select path,name,icon from t_menu;
 </select>-->
 
+
+    <!-- 功能三: 新增角色项 (关联的菜单项回显,查询所有) -->
+    <select id="findAll1" resultType="Menu">
+        select * from t_menu
+    </select>
 </mapper>

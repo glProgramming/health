@@ -44,7 +44,7 @@ public class CheckItemController {
      * 新增检查项
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('CHECKITEM_ADD')")//权限校验
+    @PreAuthorize("hasAuthority('CHECKITEM_ADD')")//检查项校验
     public Result add(@RequestBody CheckItem checkItem) {
         try {
             checkItemService.add(checkItem);

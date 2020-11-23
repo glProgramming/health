@@ -13,4 +13,103 @@
     <select id="findRolesByUserId" parameterType="int" resultMap="roleMap">
         select tr.* from t_role tr,t_user_role tur where tr.id = tur.role_id and tur.user_id = #{userId}
     </select>
+
+    <!-- 角色功能一: 角色分页查询(包含条件) -->
+    <select id="selectByCondition" parameterType="String" resultType="Role">
+        select * from t_role
+        <if test="value != null and value.length > 0">
+            where name like concat("%", #{value},"%") or keyword like concat("%", #{value},"%")
+        </if>
+    </select>
+
+    <!--功能二： 1.根据角色id查询角色权限中间表（count(*)）-->
+    <select id="findCountPermissionByRoleId" parameterType="int" resultType="int">
+        select count(*) from t_role_permission where role_id = #{id}
+    </select>
+    <!--功能二： 2.根据角色id查询 角色 - 菜单中间表（count(*)）-->
+    <select id="findCountMenuByRoleId" parameterType="int" resultType="int">
+        select count(*) from t_role_menu where role_id = #{id}
+    </select>
+    <!--功能二：3  .根据角色id查询 角色 - 用户中间表（count(*)）-->
+    <select id="findCountUserByRoleId" parameterType="int" resultType="int">
+        select count(*) from t_user_role where role_id = #{id}
+    </select>
+
+    <!--功能二：4.根据角色id 删除 角色项-->
+    <delete id="deleteById" parameterType="int">
+        delete from t_role where id=#{id}
+    </delete>
+    <!-- 功能三: 3.1 根据前端新增数据， 查询 有无对应的Role-->
+    <select id="findRoleCountBy" parameterType="Role" resultType="Role">
+        select * from t_role where name = #{name} or keyword=#{keyword}
+    </select>
+    <!-- 功能三: 3.2 根据 Role  正常添加 Role 角色 -->
+    <insert id="add" parameterType="Role">
+        /*获取检查组id*/
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_role (name,keyword,description)
+   values (#{name},#{keyword},#{description})
+    </insert>
+    <!--  功能三: 3.3 插入角色和权限中间表 -->
+    <insert id="setRoleAndPermission" parameterType="map">
+        insert into t_role_permission (role_id,permission_id)
+        values (#{roleId},#{permissionId})
+    </insert>
+    <!--功能三:4.往角色菜单中间表 插入关系数据-->
+    <insert id="setRoleAndMenu" parameterType="map">
+        insert into t_role_menu (role_id,menu_id)
+        values (#{roleId},#{menuId})
+    </insert>
+    <!--功能三:5.往角色用户中间表 插入关系数据-->
+    <insert id="setRoleAndUser" parameterType="map">
+        insert into t_user_role (role_id,user_id)
+        values (#{roleId},#{userId})
+    </insert>
+    <!--功能四: 4.1 根据 角色 id查询 角色详细信息(回显)-->
+    <select id="findById" parameterType="int" resultType="Role">
+        select * from t_role where id =#{roleId}
+    </select>
+    <!--功能四:  4.2 根据 角色 id查询  权限的 ids-->
+    <select id="findPermissionIdsByRoleId" parameterType="int" resultType="int">
+        select permission_id from t_role_permission where role_id = #{roleId}
+    </select>
+    <!--功能四:  4.3 根据 角色 id查询  用户的 ids-->
+    <select id="findUserIdsByRoleId" parameterType="int" resultType="int">
+        select user_id from t_user_role where role_id = #{roleId}
+    </select>
+    <!--功能四:  4.4 根据 角色 id查询  菜单的 ids-->
+    <select id="findMenuIdsByRoleId" parameterType="int" resultType="int">
+        select menu_id from t_role_menu where role_id = #{roleId}
+    </select>
+
+    <!--功能四: 4.5 根据角色id从 角色 权限 中间表 删除原有的关系数据-->
+    <delete id="deleteRoleAndPermissionByRoleId" parameterType="Integer">
+        delete from t_role_permission where role_id =#{id}
+    </delete>
+    <!--功能四: 功能四: 4.6  根据角色id从 角色 用户 中间表 删除原有的关系数据-->
+    <delete id="deleteUserAndRoleByRoleId" parameterType="Integer">
+        delete from t_user_role where role_id =#{id}
+    </delete>
+    <!--功能四: 功能四: 4.6  根据角色id从 角色 用户 中间表 删除原有的关系数据-->
+    <delete id="deleteRoleAndMenuByRoleId" parameterType="Integer">
+        delete from t_role_menu where role_id =#{id}
+    </delete>
+    <!-- 功能四: 4.8 根据角色id 更新角色项数据 -->
+    <update id="edit" parameterType="Role">
+        update t_role
+        <set>
+            <if test="name!=null and name.length>0">
+                name=#{name},
+            </if>
+            <if test="keyword!=null and keyword.length>0">
+                keyword=#{keyword},
+            </if>
+            <if test="description!=null and description.length>0">
+                description=#{description},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 </mapper>
