@@ -44,6 +44,14 @@ public interface MenuDao {
     Menu findByName(String name);
 
     /**
+     * 根据名称和所属菜单id查询菜单表中是否已经有此菜单
+     * @param name
+     * @param parentId
+     * @return
+     */
+    Menu findByNameAndParentId(String name, Integer parentId);
+
+    /**
      * 查询二级菜单所属菜单路径
      * @return
      * @param parentMenuId

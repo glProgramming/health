@@ -52,11 +52,6 @@
                             prop="name"
                             label="菜单名称"
                             align="center">
-                        <!--<template v-for="child in menu.children">
-                            <el-menu-item :index="child.path">
-                                <a :href="child.linkUrl" target="right">{{child.name}}</a>
-                            </el-menu-item>
-                        </template>-->
                         <template slot-scope="scope">
                             <el-popover trigger="hover" placement="top">
                                 <p>名称: {{ scope.row.name }}</p>
@@ -66,7 +61,6 @@
                                         <p style="text-align: center">{{child.name}}</p>
                                     </el-item>
                                 </template>
-                                <!--<p>住址: {{ scope.row.children.name }}</p>-->
                                 <div slot="reference" class="name-wrapper">
                                     <el-tag size="medium">{{ scope.row.name }}</el-tag>
                                 </div>
@@ -187,7 +181,7 @@
                             <el-col :span="24">
                                 <el-form-item label="上级菜单">
                                     <!--<el-input v-model="formData.parentMenuId"></el-input>-->
-                                    <el-select v-model="formData.parentMenuId" clearable placeholder="请选择">
+                                    <el-select v-model="formData.parentMenuId" :disabled="isAbled" clearable placeholder="请选择">
                                         <el-option
                                                 v-for="item in parentMenus"
                                                 :key="item.id"
@@ -723,6 +717,7 @@
                 queryString:null//查询条件
             },
             formData: {},//表单数据
+            isAbled: true,
             dialogFormVisible: false,//增加表单是否可见
             dialogFormVisible4Edit:false,//编辑表单是否可见
             rules: {//校验规则
@@ -807,11 +802,16 @@
             // 弹出编辑窗口
             handleUpdate(row) {
                 this.resetForm();
+                //获取上级菜单列表
+                this.initParentMenus();
                 //弹出窗口
                 this.dialogFormVisible4Edit = true;
                 //根据检查项id查询检查项对象 回显到弹出窗口中
                 axios.get("/menu/findById.do?id="+row.id).then(res=>{
                     this.formData = res.data.data;
+                    if (this.formData.parentMenuId){
+                        this.isAbled = false;
+                    }
                 })
             },
             //编辑

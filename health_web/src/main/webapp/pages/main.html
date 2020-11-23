@@ -21,6 +21,16 @@
         right: 10px;
         padding: 0;
     }
+    .right {
+        float: right;
+        width: 60px;
+    }
+    .item {
+        margin: 4px;
+    }
+    .right .el-tooltip__popper {
+        padding: 8px 10px;
+    }
     </style>
 </head>
 <body class="hold-transition skin-purple sidebar-mini">
@@ -60,6 +70,12 @@
                             <template slot="title">
                                 <i class="fa" :class="work.icon"></i>
                                 {{work.title}}
+                                <div class="right">
+                                    <!--<el-tooltip class="item" effect="dark" content="Right Center 提示文字" placement="right">-->
+                                    <el-tooltip class="item" effect="light" content="刷新菜单展示列表" placement="right">
+                                        <el-button type="text" plain="true" size="mini" @click="getMenuList" icon="el-icon-refresh"></el-button>
+                                    </el-tooltip>
+                                </div>
                             </template>
                             <template v-for="child in work.children">
                                 <el-menu-item :index="child.path">

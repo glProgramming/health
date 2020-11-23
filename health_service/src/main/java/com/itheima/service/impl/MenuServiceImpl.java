@@ -160,8 +160,10 @@ public class MenuServiceImpl implements MenuService {
     public Result edit(Menu menu) {
         String parentPath = getParentPath(menu);
         //根据名称查询菜单表中是否已经有此菜单
-        Menu menuByName = menuDao.findByName(menu.getName());
-        if (menuByName != null) {
+        //Menu menuByName = menuDao.findByName(menu.getName());
+        //根据名称和所属菜单id查询菜单表中是否已经有此菜单
+        Menu menuByNameAndParentId = menuDao.findByNameAndParentId(menu.getName(),menu.getParentMenuId());
+        if (menuByNameAndParentId != null) {
             return new Result(false, MessageConstant.HAS_MENU);
         }else {
             //菜单中插入路径

@@ -62,6 +62,12 @@
 <select id="findById" resultType="com.itheima.pojo.Menu">
     select * from t_menu where id = #{id};
 </select>
+<!--根据名称和路径查询菜单表中是否已经有此菜单-->
+<select id="findByNameAndParentId" resultType="com.itheima.pojo.Menu">
+    select * from t_menu
+    where name = #{param1}
+    and parentMenuId = #{param2};
+</select>
 <!--根据id更新菜单项数据-->
 <update id="edit">
     update t_menu
