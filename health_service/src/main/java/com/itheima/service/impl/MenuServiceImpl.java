@@ -41,15 +41,6 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<Menu> findAll(String username) {
-        /*//List<Menu> menuList = menuDao.findAll();
-        List<Menu> parentList = menuDao.findMenuByLevel1(menuId);
-        //遍历menuList
-        for (Menu parent : parentList) {
-            List<Menu> childrenList = menuDao.findMenuByLevel2AndParentId(parent.getId());
-            parent.setChildren(childrenList);
-        }
-        return parentList;*/
-        //获取菜单id集合
         //获取菜单id集合
         List<Integer> menuIdList = getMenuIdList(username);
         List<Menu> parentList = new ArrayList<>();
